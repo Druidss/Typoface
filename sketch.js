@@ -15,9 +15,8 @@ let sketch = function(p){
   let targetFrameRateSmall = 1;
   let targetFrameRateLarge = 30;
   let time = 0;
-  let transitionInProgress = true; // 标识是否在进行过渡
-  let transitionProgress = 0;     // 过渡进度，范围从0到1
   let alpha = 255;
+  
 
 
 
@@ -39,7 +38,7 @@ let sketch = function(p){
   p.setup = function(){
     canvas = p.createCanvas(640, 480,this.WEBGL);
     canvas.id("canvas");
-    p.colorMode(p.HSB);
+    // p.colorMode(p.HSB);
     p.stroke(255);
     p.strokeWeight(3);
 
@@ -47,8 +46,7 @@ let sketch = function(p){
     videoFeed.size(640,480);
     videoFeed.hide();//hides the Dom element-createCapture
 
-    img = p.loadImage("./bmy.png");
-    img2 = p.loadImage("./bgm2.jpg")
+    img = p.loadImage("./bmy.jpg");
 
     poem = sourceText.join(' ');
     p.textFont(f,100)
@@ -75,7 +73,6 @@ let sketch = function(p){
       }else{
         if(hasPlayedSound){
           hasPlayedSound = false;
-          alpha = 255;
         }
         p.background();
       }
@@ -130,6 +127,10 @@ let sketch = function(p){
 
   p.background = function() {
     img.resize(640, 480);
+    if (alpha < 255) {
+      alpha += 20;
+    }
+    p.tint(255, alpha);
     p.image(img, -p.width/2 , -p.height/2)  // 在坐标(0, 0)，显示原图大小的图像 
     img.loadPixels(); // 加载图像像素数据
     p.push();
@@ -138,9 +139,9 @@ let sketch = function(p){
     for (let x = 0; x < img.width; x += 5) {
       for (let y = 0; y < img.height; y += 5) {
         let pixelColor = p.color(img.get(x, y)); // 获取当前位置像素颜色
-        let avg = p.red(pixelColor)*0.222 + p.green(pixelColor)*0.707 + p.blue(pixelColor)*0.071;
+        let avg = p.red(pixelColor)*0.5 + p.green(pixelColor)*0.2 + p.blue(pixelColor)*0.1;
         let wave = p.sin(time + x * 0.1) * 20; // 使用sin函数模拟波动效果
-        let diameter = p.map(wave, -20, 20, 2 , 3.5);
+        let diameter = p.map(wave, -20, 20, 2 , 5);
 
         p.fill(avg); // 使用像素颜色填充点
         p.noStroke(); // 不绘制描边
@@ -158,21 +159,14 @@ let sketch = function(p){
 }
 
 function drawTransitionCanvas() {
-  // let transitionAlpha = p.map(transitionProgress, 0, 1, 255, 0);
-  // p.fill(255, transitionAlpha);
-  // p.rect(0, 0, p.width,p.height);
-  
-  img.resize(640, 480);
-
+  img.resize(640, 480);  
   p.tint(255, alpha);
   p.image(img, -p.width/2 , -p.height/2)  // 在坐标(0, 0)，显示原图大小的图像 
+   
   
   if (alpha > 0 && hasPlayedSound) {
-    alpha -= 30;
+    alpha -= 20;
   }
-  console.log(alpha);
-  console.log(hasPlayedSound);
-  
   p.push();
   p.pop();
 }
