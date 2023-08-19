@@ -1,23 +1,24 @@
 body {
   background-color: #000;
+  margin: 0;
 }
 
 #canvas{
-  position: absolute;
-  top: 10px;
-  left: 800px;
+  margin: 0 auto;
+  /* top: 10px; */
+  /* left: 800px; */
   /* z-index:1; */
-  border: 3px #fff solid;
+  /* border: 0.1px #fff solid; */
 	border-radius: 10px;
 }
 
 
 
-#video{
+/* #video{
   position: absolute;
   top: 10px;
   left: 10px;
   z-index:0;
-  border: 3px #fff solid;
+  border: 0.1px #fff solid;
 	border-radius: 10px;
-}
+} */

@@ -16,6 +16,7 @@ let sketch = function(p){
   let targetFrameRateLarge = 30;
   let time = 0;
   let alpha = 255;
+  let flag = false;
   
 
 
@@ -36,9 +37,8 @@ let sketch = function(p){
 
 
   p.setup = function(){
-    canvas = p.createCanvas(640, 480,this.WEBGL);
+    canvas = p.createCanvas(this.windowWidth, this.windowHeight,this.WEBGL);
     canvas.id("canvas");
-    // p.colorMode(p.HSB);
     p.stroke(255);
     p.strokeWeight(3);
 
@@ -47,10 +47,8 @@ let sketch = function(p){
     videoFeed.hide();//hides the Dom element-createCapture
 
     img = p.loadImage("./bmy.jpg");
-
     poem = sourceText.join(' ');
     p.textFont(f,100)
-    soundBgm.loop();
   }
 
 
@@ -77,7 +75,7 @@ let sketch = function(p){
         p.background();
       }
     }
-
+    // console.log(sourceText[1]);
   }
 
   p.faceMesh = function(){
@@ -102,7 +100,7 @@ let sketch = function(p){
       p.stroke(255); // 设置边框颜色为白色
       p.strokeWeight(1); // 设置边框宽度为2像素
       p.noFill(); // 不填充矩形
-      p.rect(x,y,colorB*20,colorB*20);
+      p.rect(x,y,colorB*40,colorB*40);
 
       // p.translate(x-p.width/2,y-p.height/2,z);
       var xFrame = detections.multiFaceLandmarks[0][j].x
@@ -126,9 +124,9 @@ let sketch = function(p){
 
 
   p.background = function() {
-    img.resize(640, 480);
+    img.resize(p.width, p.height);
     if (alpha < 255) {
-      alpha += 20;
+      alpha += 50;
     }
     p.tint(255, alpha);
     p.image(img, -p.width/2 , -p.height/2)  // 在坐标(0, 0)，显示原图大小的图像 
@@ -136,12 +134,12 @@ let sketch = function(p){
     p.push();
     p.translate(-p.width/2,-p.height/2);
 
-    for (let x = 0; x < img.width; x += 5) {
-      for (let y = 0; y < img.height; y += 5) {
+    for (let x = 0; x < img.width; x += 8) {
+      for (let y = 0; y < img.height; y += 8) {
         let pixelColor = p.color(img.get(x, y)); // 获取当前位置像素颜色
         let avg = p.red(pixelColor)*0.5 + p.green(pixelColor)*0.2 + p.blue(pixelColor)*0.1;
         let wave = p.sin(time + x * 0.1) * 20; // 使用sin函数模拟波动效果
-        let diameter = p.map(wave, -20, 20, 2 , 5);
+        let diameter = p.map(wave, -20, 20, 4 , 6);
 
         p.fill(avg); // 使用像素颜色填充点
         p.noStroke(); // 不绘制描边
@@ -159,16 +157,29 @@ let sketch = function(p){
 }
 
 function drawTransitionCanvas() {
-  img.resize(640, 480);  
+  img.resize(p.width, p.height);  
   p.tint(255, alpha);
   p.image(img, -p.width/2 , -p.height/2)  // 在坐标(0, 0)，显示原图大小的图像 
    
   
   if (alpha > 0 && hasPlayedSound) {
-    alpha -= 20;
+    alpha -= 50;
   }
   p.push();
   p.pop();
+}
+
+function quesion(){
+    // p.push()
+    // p.tint(255, 100)
+    // p.pop();
+    p.frameRate(2);
+    let randomIndex = p.floor(p.random(0, 70));
+    p.textAlign(p.CENTER, p.CENTER);
+    p.textSize(p.width/28);
+    p.textStyle(p.BOLD);
+    p.fill(255);
+    p.text(sourceText[randomIndex],p.width/2,p.height/1.6);
 }
 
 p.textFace = function () {
@@ -181,6 +192,7 @@ p.textFace = function () {
   let h = p.height / gloria.height;
 
   gloria.loadPixels();
+
   for (let j = 0; j < gloria.height; j++) {
   for (let i = 0; i < gloria.width; i++) {
       const pixelIndex = (i + j * gloria.width) * 4;
@@ -201,7 +213,12 @@ p.textFace = function () {
     }
   }
   startIndex++; 
+  if(currentFrameRate <4){
+    quesion();
+  }
   p.pop();
+  
+
 }
 }
 
